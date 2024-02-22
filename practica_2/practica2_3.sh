@@ -18,13 +18,13 @@
 #Sintaxis: practica2_3.sh <nombre_archivo>
 
 
-fichero=$1          # Almacenar el primer argumento en la variable 'fichero'
+fichero=$1                                           # Almacenar el primer argumento en la variable 'fichero'
 
-if [ "$#" -ne 1 ]; then 
-    echo "Sintaxis: practica2_3.sh <nombre_archivo>"
-elif [ ! -f "$fichero" ]; then
-    echo "$fichero no existe"
-else 
-    chmod u+x,g+x "$fichero"
-    stat -c '%A' "$fichero"
+if [ "$#" -ne 1 ]; then                              # Verificar si el número de argumentos es distinto de 1
+    echo "Sintaxis: practica2_3.sh <nombre_archivo>" # Imprimir un mensaje de error
+elif [ ! -f "$fichero" ]; then                       # Verificar si el archivo no existe
+    echo "$fichero no existe"                        # Imprimir un mensaje de error
+else                                                 # Si el archivo existe
+    chmod u+x,g+x "$fichero"                         # Conceder permisos de ejecución al dueño y al grupo
+    stat -c '%A' "$fichero"                          # Mostrar el modo final del archivo
 fi
