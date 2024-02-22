@@ -1,5 +1,6 @@
 #!/bin/bash
-
+#842545, Valero Casajus, Curro, [M], [3], [B]
+#843078, Torres Perez, Guillermo, [M], [3], [B] 
 
 #Escribir un script que reciba un único nombre de archivo en la línea de
 #comandos, verifique que existe y que es un archivo común (o regular), lo
