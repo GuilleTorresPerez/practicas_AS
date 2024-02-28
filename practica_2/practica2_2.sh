@@ -7,7 +7,7 @@ for param in "$@"
 do
     if [ -f "$param" ]                    #Si el archivo existe y es un archivo común
     then
-       more "$param"                      #Mostrar el archivo con more
+       more -e "$param"                   #Mostrar el archivo con more -e para que pase los tests
     else
        echo -n "$param no es un fichero"  #Imprimir el mensaje de error
     fi
