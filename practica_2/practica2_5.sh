@@ -26,19 +26,31 @@ read directorio
 numDirectorios=0
 numFicheros=0
 
-# if [ ! -d "$directorio" ]; then
-#     echo "$directorio no es un directorio"
-# else 
-#     numDirectorios=$(ls -l "$directorio" | grep ^d | wc -l )
-#     numFicheros=$(ls -l "$directorio" | grep ^- | wc -l )
-#     echo "El numero de ficheros y directorios en $directorio es de $numFicheros y $numDirectorios, respectivamente"
-# fi
-
-
 if [ ! -d "$directorio" ]; then
     echo "$directorio no es un directorio"
 else 
-    listado=$(ls "$directorio")
-    echo "$listado"
+    numDirectorios=$(ls -l "$directorio" | grep ^d | wc -l )
+    numFicheros=$(ls -l "$directorio" | grep ^- | wc -l )
+    echo "El numero de ficheros y directorios en $directorio es de $numFicheros y $numDirectorios, respectivamente"
 fi
+
+# IFS=$'\n'
+# if [ ! -d "$directorio" ]; then
+#     echo "$directorio no es un directorio"
+# else 
+#     listado=$(ls -l "$directorio")
+#     for elemento in ${listado}
+#     do 
+#         echo $elemento
+#         echo "hola"
+#         ((numCosas++))
+#         if [[ $elemento == d* ]]; then
+#             ((numDirectorios++))
+#         elif [[ "$elemento" == -* ]]; then
+#             ((numFicheros++))
+#         fi
+#     done
+#     echo "num cosas: $numCosas"
+#     echo "El numero de ficheros y directorios en $directorio es de $numFicheros y $numDirectorios, respectivamente"
+# fi
 
