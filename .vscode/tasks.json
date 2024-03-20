@@ -1,0 +1,23 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Copiar prácticas a servidor remoto",
+            "type": "shell",
+            "command": "scp -r ../practicas_AS as@192.168.56.101:/home/as",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "SSH al servidor remoto",
+            "type": "shell",
+            "command": "ssh as@192.168.56.101",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        }
+    ]
+}
