@@ -13,6 +13,61 @@ then
   echo "Número incorrecto de parámetros"
   exit
 fi
+#!/bin/bash
+
+fecha_actual=$(date +"%Y-%m-%d")
+fecha_nueva=$(date -d "$fecha_actual + 30 days" +"%Y-%m-%d")
+
+addUser(){
+ local login_name="$1"
+ local contrasena="$2"
+ local nombreCompleto="$3"
+
+ #Comprobar si los campos están vacíos
+ if [ -z "$login_name" ] || [ -z "$contrasena" ] || [ -z "$nombreCompleto" ]
+ then
+    echo "Campo invalido"
+    exit 1
+ fi
+
+ #Comprobar si el usuario existe revisando el fichero /etc/passwd
+ if grep -q "^$login_name:" /etc/passwd; then
+    echo "El usuario $login_name ya existe"
+ fi
+
+ #Crear el usuario
+ useradd -m -e $fecha_nueva -K UID_MIN=1815 -c "$nombreCompleto" -k /etc/skel "$login_name"
+ #Asignar la contraseña
+ echo "$login_name:$contrasena" | chpasswd
+ #Desbloquear usuario
+ usermod -U "$login_name" &>/dev/null
+}
+
+
+
+if [ $(id -u) -ne "0" ]
+then
+   echo "Este script necesita privilegios de administracion"
+   exit 1
+fi
+
+if [ $# != 2 ]
+then
+    echo "Numero incorrecto de parametros"
+    exit 1
+fi
+
+
+if [ "$1" = "-a" ]
+then
+   OLDIFS=$IFS
+   IFS=,
+   while read -r usuario pass nombre basura
+   do
+     addUser "$usuario" "$pass" "$nombre"
+   done < "$2"
+   IFS=$OLDIFS
+fi
 
 if [ "$1" = "-a" ]
 then 
