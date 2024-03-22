@@ -30,38 +30,30 @@ addUser(){
 }
 
 
-borrarUsuraio(){
- for var in $(cut -d ',' -f 1 "$1")
- do
-   if [ $(cat /etc/passwd | grep "$var:" | wc -l) -ne 0 -a "$var" != "root" ]; then
-     #> /var/spool/mail/"$var"
-     #if [ ! -e /extra/backup/"$var".tar ]; then
-     if [ tar -cPf /extra/backup/"$var".tar "$(cat /etc/passwd | grep "$var:" | cut -d':' -f6)" ]
-     then
-     #if [ $? -eq 0 ]; then
-       userdel -r "$var"
-     #fi
-     fi
+borrarUsuario(){
+   #Comprobar si el usuario existe
+   grep -q "$1" /etc/passwd
+   if [ $? -eq 1 ]; then 
+      return 
    fi
- done
+
+   #Obtenemos el directorio home del user
+   home=$(grep "$1" /etc/passwd | cut -d ':' -f 6) 
+   tar czfp /extra/backup/"$1".tar "$home" &> /dev/null
+   if [ $? -eq 0 ]; then								# Por último, eliminamos el usuario
+		userdel -r "$1" &> /dev/null	
+	fi
 }
 
 crearCarpetaBackup(){
-   if [ ! -d "/extra" ]; then
-      mkdir /extra/
-   fi
-   if [ ! -d "/extra/backup" ]; then
-      mkdir /extra/backup/
-   fi
+   if [ ! -d /extra/backup ]; then					# Creamos el directorio de backup
+		mkdir -p /extra/backup
+	fi
 }
 
 if [ $(id -u) -ne "0" ]
 then
    echo "Este script necesita privilegios de administracion"
-
-
-
-
    exit 1
 fi
 
@@ -71,22 +63,22 @@ then
     exit 1
 fi
 
-
+OLDIFS=$IFS
+IFS=,
 if [ "$1" = "-a" ]
 then
-   OLDIFS=$IFS
-   IFS=,
    while read -r usuario pass nombre basura
    do
      addUser "$usuario" "$pass" "$nombre"
    done < "$2"
-   IFS=$OLDIFS
-
-
 elif [ "$1" = "-s" ]; then
-   crearCarpetaBackup
-   borrarUsuario "$2"
+   while read usuario passwd nombre basura
+   do 
+      crearCarpetaBackup
+      borrarUsuario "$usuario"
+   done < "$2"
 else
- echo "Opcion invalida"
- exit 1
+   echo "Opcion invalida"
+   exit 1
 fi
+IFS=$OLDIFS
