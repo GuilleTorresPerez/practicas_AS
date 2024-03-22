@@ -1,5 +1,6 @@
 #!/bin/bash
 
+#FUNCIONES
 fecha_actual=$(date +"%Y-%m-%d")
 fecha_nueva=$(date -d "$fecha_actual + 30 days" +"%Y-%m-%d")
 
@@ -30,7 +31,7 @@ addUser(){
 }
 
 
-borrarUsuario(){
+removeUser(){
    #Comprobar si el usuario existe
    grep -q "$1" /etc/passwd
    if [ $? -eq 1 ]; then 
@@ -50,6 +51,11 @@ crearCarpetaBackup(){
 		mkdir -p /extra/backup
 	fi
 }
+
+
+
+
+#PROGRAMA PRINCIPAL
 
 if [ $(id -u) -ne "0" ]
 then
@@ -75,7 +81,7 @@ elif [ "$1" = "-s" ]; then
    crearCarpetaBackup
    while read usuario passwd nombre basura
    do 
-      borrarUsuario "$usuario"
+      removeUser "$usuario"
    done < "$2"
 else
    echo "Opcion invalida"
