@@ -31,13 +31,6 @@ addUser(){
 
 
 borrarUsuraio(){
- if [ ! -d "/extra" ]; then
-   mkdir /extra/
- fi
- if [ ! -d "/extra/backup" ]; then
-   mkdir /extra/backup/
- fi
-
  for var in $(cut -d ',' -f 1 "$1")
  do
    if [ $(cat /etc/passwd | grep "$var:" | wc -l) -ne 0 -a "$var" != "root" ]; then
@@ -51,6 +44,15 @@ borrarUsuraio(){
      fi
    fi
  done
+}
+
+crearCarpetaBackup(){
+   if [ ! -d "/extra" ]; then
+      mkdir /extra/
+   fi
+   if [ ! -d "/extra/backup" ]; then
+      mkdir /extra/backup/
+   fi
 }
 
 if [ $(id -u) -ne "0" ]
@@ -82,6 +84,7 @@ then
 
 
 elif [ "$1" = "-s" ]; then
+   crearCarpetaBackup
    borrarUsuario "$2"
 else
  echo "Opcion invalida"
