@@ -72,9 +72,9 @@ then
      addUser "$usuario" "$pass" "$nombre"
    done < "$2"
 elif [ "$1" = "-s" ]; then
+   crearCarpetaBackup
    while read usuario passwd nombre basura
    do 
-      crearCarpetaBackup
       borrarUsuario "$usuario"
    done < "$2"
 else
