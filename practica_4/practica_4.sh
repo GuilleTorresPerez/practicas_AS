@@ -16,9 +16,7 @@ do
         echo "$ip no es accesible" 1>&2
         continue
     fi
-
-    scp practica_3.sh as@${ip}:~/ &> /dev/null
-    scp $2 as@${ip}:~/ &> /dev/null
+    scp -q -i "~/.ssh/id_as_ed25519" "./practica_3.sh" "$2" "as@$ip:~/"
     ssh -i $HOME/.ssh/id_as_ed25519 -n as@${ip} "sudo chmod u+x practica_3.sh"
     ssh -i $HOME/.ssh/id_as_ed25519 -n as@${ip} "sudo ./practica_3.sh $1 $2"
 done < "$3"
