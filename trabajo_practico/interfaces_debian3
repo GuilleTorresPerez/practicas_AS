@@ -1,0 +1,7 @@
+# The loopback network interface
+auto lo
+iface lo inet loopback
+
+# Red interna DHCP
+auto enp0s3
+iface enp0s3 inet dhcp
