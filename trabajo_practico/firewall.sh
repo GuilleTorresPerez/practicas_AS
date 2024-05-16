@@ -13,6 +13,26 @@ iptables -P OUTPUT ACCEPT
 
 #Intranet
 
+#Aceptar todo el trafico de la intranet hacia debian1
+#sudo iptables -A INPUT -s 192.168.1.0/24 -j ACCEPT #redInterna1
+#sudo iptables -A INPUT -s 192.168.2.0/24 -j ACCEPT #redInterna2
+#sudo iptables -A INPUT -s 192.168.3.0/24 -j ACCEPT #redInterna3
+#sudo iptables -A INPUT -s 192.168.56.0/24 -j ACCEPT #redHost
+
+
+#Trafico forward
+#sudo iptables -A FORWARD -s 192.168.1.0/24 -d 192.168.2.0/24 -j ACCEPT #redIntera1 a redInterna2
+#sudo iptables -A FORWARD -s 192.168.1.0/24 -d 192.168.3.0/24 -j ACCEPT #redIntera1 a redInterna3
+#sudo iptables -A FORWARD -s 192.168.1.0/24 -d 192.168.56.0/24 -j ACCEPT #redIntera1 a redHost
+
+#sudo iptables -A FORWARD -s 192.168.2.0/24 -d 192.168.1.0/24 -j ACCEPT #redIntera2 a redInterna1
+#sudo iptables -A FORWARD -s 192.168.2.0/24 -d 192.168.3.0/24 -j ACCEPT #redIntera2 a redInterna3
+#sudo iptables -A FORWARD -s 192.168.2.0/24 -d 192.168.56.0/24 -j ACCEPT #redIntera2 a redHost
+
+#sudo iptables -A FORWARD -s 192.168.3.0/24 -d 192.168.1.0/24 -j ACCEPT #redIntera3 a redInterna1
+#sudo iptables -A FORWARD -s 192.168.3.0/24 -d 192.168.2.0/24 -j ACCEPT #redIntera3 a redInterna2
+#sudo iptables -A FORWARD -s 192.168.3.0/24 -d 192.168.56.0/24 -j ACCEPT #redIntera3 a redHost
+
 #Aceptar las respuestas de mensajes ping que llegan por la interfaz enp0s8 (redHost)
 #y que se queda debian1
 iptables -A INPUT -i enp0s8 -p icmp --icmp-type 0 -j ACCEPT 
@@ -41,7 +61,7 @@ iptables -A INPUT -i lo -p all -j ACCEPT
 
 #Extranet
 
-#El trafico de la intranet hacia la extranet usa la IP de debian1
+#Cambiar IP origen al trafico de Host hacia la extranet
 iptables -t nat -A POSTROUTING -o enp0s8 -j SNAT --to 192.168.56.2
 
 #Aceptar el trafico que llegue por la interfaz enp0s3
@@ -57,6 +77,8 @@ iptables -A FORWARD -i enp0s3 -p all -j ACCEPT
 iptables -t nat -A POSTROUTING -s 192.168.56.0/24 -o enp0s3 -j MASQUERADE
 iptables -t nat -A POSTROUTING -s 192.168.2.0/24 -o enp0s3 -j MASQUERADE
 iptables -t nat -A POSTROUTING -s 192.168.3.0/24 -o enp0s3 -j MASQUERADE
+
+#iptables -t nat -A PREROUTING -i enp0s3 -p tcp --dport 80 -j DNAT --to 192.168.2.1
 
 #Si host quiere conectarse a internet se redirige a debian2 por el puerto 80 (HTTP)
 iptables -t nat -A PREROUTING -i enp0s8 -p tcp --dport 80 -j DNAT --to 192.168.1.1:80
@@ -75,3 +97,6 @@ iptables -A FORWARD -d 192.168.1.1 -p tcp --dport 443 -j ACCEPT
 
 #Mostrar las reglas que se acaban de configurar
 iptables -L
+
+#Guardar reglas iptables
+sudo sh -c "iptables-save > /etc/iptables/rules.v4"
